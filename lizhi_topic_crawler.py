@@ -44,7 +44,8 @@ class TopicCrawler(object):
         gender = self.get_gender(urllib.urlopen(firstpage).read())
         pagesize = self.get_page_num(urllib.urlopen(firstpage).read())
         audiolist = list()
-        for curindex in (1, pagesize+1):
+        index = -1
+        for curindex in range(1, pagesize+1):
             cururl = audiourl%(curindex,)
             html = urllib.urlopen(cururl).read()
             soup = BeautifulSoup(html,"lxml")
@@ -56,7 +57,7 @@ class TopicCrawler(object):
                         try:
                             audiolist.append(curnode.find_all("a")[0].attrs["title"])
                         except Exception:
-                            pass
+                            traceback.print_exc()
         return [gender,audiolist]
 
     def save_excel(self, anchordic):
@@ -72,7 +73,7 @@ class TopicCrawler(object):
                 sheet.write(index, 1, name)
                 sheet.write(index, 2, anchordic[name]["gender"])
                 sheet.write(index, 3, anchordic[name]["audiolist"][i])
-        wbk.save('g:/荔枝热榜主播录播话题汇总.xls'.decode(CURENCODING))
+        wbk.save('g:/荔枝热榜主播录播话题汇总_20170213.xls'.decode(CURENCODING))
 
     def start(self):
         print 'start...'
